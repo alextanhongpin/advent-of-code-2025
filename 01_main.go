@@ -44,7 +44,8 @@ func part2(input string) int {
 	d := 50
 	for row := range strings.SplitSeq(input, "\n") {
 		dir, n := row[0], toInt(row[1:])
-		for range n {
+		c += n / 100
+		for range n % 100 {
 			switch dir {
 			case 'L':
 				d--
