@@ -9,52 +9,57 @@ import (
 )
 
 func main() {
-	fmt.Println(rotate(testInput)) // 3 6
-	fmt.Println(rotate(input))     // 1158 6860
+	// Part 1.
+	fmt.Println(part1(testInput)) // 3
+	fmt.Println(part1(input))     // 1158
+
+	fmt.Println(part2(testInput)) // 6
+	fmt.Println(part2(input))     // 6860
 }
 
-func rotate(input string) (zeros, total int) {
+func part1(input string) int {
+	c := 0 // The number of times at 0.
 	d := 50
 	for row := range strings.SplitSeq(input, "\n") {
 		dir, n := row[0], toInt(row[1:])
 		switch dir {
 		case 'L':
-			f, z := dial(d, -n)
-			d = f
-			total += z
+			d -= n
 		case 'R':
-			f, z := dial(d, n)
-			d = f
-			total += z
+			d += n
 		}
+		d %= 100
+		d += 100
+		d %= 100
 		if d == 0 {
-			zeros += 1
+			c += 1
 		}
 	}
 
-	return
+	return c
 }
 
-func dial(n int, times int) (final, zeros int) {
-	var dir int
-	if times < 0 {
-		dir = -1
-	} else {
-		dir = +1
+func part2(input string) int {
+	c := 0 // The number of times it pass by 0.
+	d := 50
+	for row := range strings.SplitSeq(input, "\n") {
+		dir, n := row[0], toInt(row[1:])
+		for range n {
+			switch dir {
+			case 'L':
+				d--
+			case 'R':
+				d++
+			}
+			d += 100
+			d %= 100
+			if d == 0 {
+				c++
+			}
+		}
 	}
 
-	for range dir * times {
-		n += dir
-		if n < 0 {
-			n += 100
-		}
-		n %= 100
-		if n == 0 {
-			zeros++
-		}
-	}
-
-	return n, zeros
+	return c
 }
 
 func toInt(s string) int {
