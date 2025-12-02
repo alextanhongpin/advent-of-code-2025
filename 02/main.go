@@ -33,21 +33,17 @@ func part1(input string) int {
 			panic("invalid string")
 		}
 		for i := toInt(a); i < toInt(b)+1; i++ {
-			if invalidID(strconv.Itoa(i)) {
+			s := strconv.Itoa(i)
+			if len(s)%2 != 0 {
+				continue
+			}
+			m := len(s) / 2
+			if s[:m] == s[m:] {
 				total += i
 			}
 		}
 	}
 	return total
-}
-
-func invalidID(s string) bool {
-	if len(s)%2 == 0 {
-		m := len(s) / 2
-		return s[:m] == s[m:]
-	}
-
-	return false
 }
 
 func part2(input string) int {
