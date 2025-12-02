@@ -1,2 +1,11 @@
+today := $(shell date +"%d")
+
+day:
+	go run $(today)/main.go
+
 run:
-	go run $(shell date +"%d")_main.go
+	go run $(day)/main.go
+
+cp:
+	mkdir -p $(today)
+	cp template.go $(today)/main.go
