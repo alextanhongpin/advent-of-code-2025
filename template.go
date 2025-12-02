@@ -8,11 +8,11 @@ import (
 )
 
 func main() {
-	fmt.Println("test1:", part1(testInput)) // 3
-	fmt.Println("prod1:", part1(input))     // 1158
+	fmt.Println("test1:", part1(testInput)) // 0
+	fmt.Println("prod1:", part1(input))     // 0
 
-	fmt.Println("test2:", part2(testInput)) // 6
-	fmt.Println("prod2:", part2(input))     // 6860
+	fmt.Println("test2:", part2(testInput)) // 0
+	fmt.Println("prod2:", part2(input))     // 0
 }
 
 func part1(input string) int {
