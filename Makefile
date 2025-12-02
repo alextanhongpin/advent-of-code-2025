@@ -9,3 +9,5 @@ run:
 cp:
 	mkdir -p $(today)
 	cp template.go $(today)/main.go
+	cp test.txt $(today)/test.txt
+	cp input.txt $(today)/input.txt

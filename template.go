@@ -3,9 +3,16 @@
 package main
 
 import (
+	_ "embed"
 	"fmt"
 	"strconv"
 )
+
+//go:embed test.txt
+var testInput string
+
+//go:embed input.txt
+var input string
 
 func main() {
 	fmt.Println("test1:", part1(testInput)) // 0
@@ -30,7 +37,3 @@ func toInt(s string) int {
 	}
 	return n
 }
-
-var testInput = ``
-
-var input = ``
