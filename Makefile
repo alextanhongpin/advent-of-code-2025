@@ -7,7 +7,7 @@ run:
 	go run $(day)/main.go
 
 cp:
-	mkdir -p $(today)
+	mkdir $(today)
 	cp template.go $(today)/main.go
-	cp test.txt $(today)/test.txt
-	cp input.txt $(today)/input.txt
+	touch $(today)/test.txt
+	touch $(today)/input.txt
