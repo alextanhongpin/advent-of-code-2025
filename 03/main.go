@@ -5,7 +5,6 @@ package main
 import (
 	_ "embed"
 	"fmt"
-	"math/big"
 	"strconv"
 	"strings"
 )
@@ -17,7 +16,7 @@ var testInput string
 var input string
 
 func main() {
-	fmt.Println("test1:", part1(testInput)) // 0
+	fmt.Println("test1:", part1(testInput)) // 357
 	fmt.Println("prod1:", part1(input))     // 17324
 
 	fmt.Println("test2:", part2(testInput)) // 3121910778619
@@ -33,16 +32,7 @@ func part1(input string) int {
 			continue
 		}
 
-		n := 0
-		for i := 0; i < len(row); i++ {
-			for j := i + 1; j < len(row); j++ {
-				m := toInt(string(row[i]))*10 + toInt(string(row[j]))
-				if m > n {
-					n = m
-				}
-			}
-		}
-		total += n
+		total += maxJoltage(row, 2)
 	}
 	return total
 }
@@ -55,43 +45,37 @@ func part2(input string) int {
 			continue
 		}
 
-		// how do we find the largest number sequence?
-		// 98765111119999
-		total += maxJoltage(row)
+		total += maxJoltage(row, 12)
 	}
 	return total
 }
 
-func maxJoltage(s string) int {
-	if len(s) < 12 {
+func maxJoltage(s string, l int) int {
+	if len(s) < l {
 		return 0
 	}
 
-	if len(s) == 12 {
+	if len(s) == l {
 		return toInt(s)
 	}
 
 	var m string
-	for i := 0; i < 13; i++ {
-		a := new(big.Int)
-		a.SetString(m, 10)
-
+	for i := 0; i < l+1; i++ {
 		n := s[:i] + s[i+1:]
-
-		b := new(big.Int)
-		b.SetString(n, 10)
-		if a.Cmp(b) == -1 {
+		nl := min(len(n), l)
+		ml := min(len(m), l)
+		if toInt(m[:ml]) < toInt(n[:nl]) {
 			m = n
 		}
 	}
 
-	return maxJoltage(m)
+	return maxJoltage(m, l)
 }
 
 func toInt(s string) int {
 	n, err := strconv.Atoi(s)
 	if err != nil {
-		panic(err)
+		//panic(err)
 	}
 	return n
 }
