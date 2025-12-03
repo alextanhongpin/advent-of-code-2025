@@ -17,34 +17,30 @@ var input string
 
 func main() {
 	fmt.Println("test1:", part1(testInput)) // 0
-	fmt.Println("prod1:", part1(input))     // 0
-
-	fmt.Println("test2:", part2(testInput)) // 0
-	fmt.Println("prod2:", part2(input))     // 0
+	fmt.Println("prod1:", part1(input))     // 17324
 }
 
 func part1(input string) int {
+	total := 0
 	input = strings.TrimSpace(input)
 	for row := range strings.SplitSeq(input, "\n") {
 		row = strings.TrimSpace(row)
 		if row == "" {
 			continue
 		}
-		_ = row
-	}
-	return 0
-}
 
-func part2(input string) int {
-	input = strings.TrimSpace(input)
-	for row := range strings.SplitSeq(input, "\n") {
-		row = strings.TrimSpace(row)
-		if row == "" {
-			continue
+		n := 0
+		for i := 0; i < len(row); i++ {
+			for j := i + 1; j < len(row); j++ {
+				m := toInt(string(row[i]))*10 + toInt(string(row[j]))
+				if m > n {
+					n = m
+				}
+			}
 		}
-		_ = row
+		total += n
 	}
-	return 0
+	return total
 }
 
 func toInt(s string) int {
