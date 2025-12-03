@@ -51,11 +51,10 @@ func part2(input string) int {
 }
 
 func maxJoltage(s string, l int) int {
-	if len(s) < l {
+	switch {
+	case len(s) < l:
 		return 0
-	}
-
-	if len(s) == l {
+	case len(s) == l:
 		return toInt(s)
 	}
 
