@@ -26,15 +26,10 @@ type Point struct {
 	x, y int
 }
 
-var positions = []Point{
-	{-1, 1},
-	{-1, 0},
-	{-1, -1},
-	{0, -1},
-	{0, 1},
-	{1, 1},
-	{1, 0},
-	{1, -1},
+var neighbours = []Point{
+	{-1, 1}, {0, 1}, {1, 1},
+	{-1, 0} /*{0, 0}*/, {1, 0},
+	{-1, -1}, {0, -1}, {1, -1},
 }
 
 func part1(input string) int {
@@ -57,7 +52,7 @@ func part1(input string) int {
 			continue
 		}
 		var neighbour int
-		for _, n := range positions {
+		for _, n := range neighbours {
 			if grid[Point{
 				x: p.x + n.x,
 				y: p.y + n.y,
@@ -97,11 +92,12 @@ func part2(input string) int {
 				continue
 			}
 			var neighbour int
-			for _, n := range positions {
-				if grid[Point{
+			for _, n := range neighbours {
+				np := Point{
 					x: p.x + n.x,
 					y: p.y + n.y,
-				}] == '@' {
+				}
+				if grid[np] == '@' {
 					neighbour++
 				}
 				if neighbour >= 4 {
