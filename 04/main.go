@@ -5,7 +5,6 @@ package main
 import (
 	_ "embed"
 	"fmt"
-	"strconv"
 	"strings"
 )
 
@@ -16,11 +15,11 @@ var testInput string
 var input string
 
 func main() {
-	fmt.Println("test1:", part1(testInput)) // 0
-	fmt.Println("prod1:", part1(input))     // 0
+	fmt.Println("test1:", part1(testInput)) // 13
+	fmt.Println("prod1:", part1(input))     // 1445
 
-	fmt.Println("test2:", part2(testInput)) // 0
-	fmt.Println("prod2:", part2(input))     // 0
+	fmt.Println("test2:", part2(testInput)) // 43
+	fmt.Println("prod2:", part2(input))     // 8317
 }
 
 type Point struct {
@@ -89,10 +88,10 @@ func part2(input string) int {
 			grid[p] = ch
 		}
 	}
+	size := len(grid)
 
-	var total int
 	for {
-		var local int
+		var total int
 		for p, ch := range grid {
 			if ch != '@' {
 				continue
@@ -110,23 +109,14 @@ func part2(input string) int {
 				}
 			}
 			if neighbour < 4 {
-				local++
 				total++
 				delete(grid, p)
 			}
 		}
-		if local == 0 {
+		if total == 0 {
 			break
 		}
 	}
 
-	return total
-}
-
-func toInt(s string) int {
-	n, err := strconv.Atoi(s)
-	if err != nil {
-		panic(err)
-	}
-	return n
+	return size - len(grid)
 }
