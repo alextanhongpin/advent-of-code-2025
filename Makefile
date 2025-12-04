@@ -1,7 +1,7 @@
 today := $(shell date +"%d")
 
 day:
-	go run $(today)/main.go
+	go run $(today)/main.go > $(today)/output.txt
 
 run:
 	go run $(day)/main.go
