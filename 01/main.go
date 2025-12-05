@@ -16,6 +16,9 @@ var testInput string
 var input string
 
 func main() {
+	testInput = strings.TrimSpace(testInput)
+	input = strings.TrimSpace(input)
+
 	// Part 1.
 	fmt.Println("test1:", part1(testInput)) // 3
 	fmt.Println("prod1:", part1(input))     // 1158
@@ -28,10 +31,6 @@ func part1(input string) int {
 	c := 0 // The number of times at 0.
 	d := 50
 	for row := range strings.SplitSeq(input, "\n") {
-		row = strings.TrimSpace(row)
-		if row == "" {
-			continue
-		}
 		dir, n := row[0], toInt(row[1:])
 		switch dir {
 		case 'L':
@@ -54,10 +53,6 @@ func part2(input string) int {
 	c := 0 // The number of times it pass by 0.
 	d := 50
 	for row := range strings.SplitSeq(input, "\n") {
-		row = strings.TrimSpace(row)
-		if row == "" {
-			continue
-		}
 		dir, n := row[0], toInt(row[1:])
 		c += n / 100
 		for range n % 100 {

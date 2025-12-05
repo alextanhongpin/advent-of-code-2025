@@ -16,6 +16,9 @@ var testInput string
 var input string
 
 func main() {
+	testInput = strings.TrimSpace(testInput)
+	input = strings.TrimSpace(input)
+
 	fmt.Println("test1:", part1(testInput)) // 3
 	fmt.Println("prod1:", part1(input))     // 770
 
@@ -36,16 +39,12 @@ func (i Interval) Overlap(o Interval) bool {
 }
 
 func part1(input string) int {
-	input = strings.TrimSpace(input)
 	ranges, ingredients, ok := strings.Cut(input, "\n\n")
 	if !ok {
 		panic("invalid input row")
 	}
 	var intervals []Interval
 	for row := range strings.SplitSeq(ranges, "\n") {
-		if strings.TrimSpace(row) == "" {
-			continue
-		}
 		a, b, ok := strings.Cut(row, "-")
 		if !ok {
 			panic("invalid input")
@@ -58,10 +57,6 @@ func part1(input string) int {
 
 	var count int
 	for row := range strings.SplitSeq(ingredients, "\n") {
-		row = strings.TrimSpace(row)
-		if row == "" {
-			continue
-		}
 		x := toInt(row)
 		for _, i := range intervals {
 			if i.In(x) {
@@ -74,7 +69,6 @@ func part1(input string) int {
 }
 
 func part2(input string) int {
-	input = strings.TrimSpace(input)
 	ranges, _, ok := strings.Cut(input, "\n\n")
 	if !ok {
 		panic("invalid input row")
@@ -82,9 +76,6 @@ func part2(input string) int {
 
 	var intervals []Interval
 	for row := range strings.SplitSeq(ranges, "\n") {
-		if strings.TrimSpace(row) == "" {
-			continue
-		}
 		a, b, ok := strings.Cut(row, "-")
 		if !ok {
 			panic("invalid input")

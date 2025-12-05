@@ -16,6 +16,9 @@ var testInput string
 var input string
 
 func main() {
+	testInput = strings.TrimSpace(testInput)
+	input = strings.TrimSpace(input)
+
 	fmt.Println("test1:", part1(testInput)) // 357
 	fmt.Println("prod1:", part1(input))     // 17324
 
@@ -25,13 +28,7 @@ func main() {
 
 func part1(input string) int {
 	total := 0
-	input = strings.TrimSpace(input)
 	for row := range strings.SplitSeq(input, "\n") {
-		row = strings.TrimSpace(row)
-		if row == "" {
-			continue
-		}
-
 		total += maxJoltage(row, 2)
 	}
 	return total
@@ -39,12 +36,7 @@ func part1(input string) int {
 
 func part2(input string) int {
 	var total int
-	input = strings.TrimSpace(input)
 	for row := range strings.SplitSeq(input, "\n") {
-		if row == "" {
-			continue
-		}
-
 		total += maxJoltage(row, 12)
 	}
 	return total

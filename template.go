@@ -16,6 +16,9 @@ var testInput string
 var input string
 
 func main() {
+	testInput = strings.TrimSpace(testInput)
+	input = strings.TrimSpace(input)
+
 	fmt.Println("test1:", part1(testInput)) // 0
 	fmt.Println("prod1:", part1(input))     // 0
 

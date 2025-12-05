@@ -16,6 +16,9 @@ var testInput string
 var input string
 
 func main() {
+	testInput = strings.TrimSpace(testInput)
+	input = strings.TrimSpace(input)
+
 	fmt.Println("test1:", part1(testInput)) // 1227775554
 	fmt.Println("prod1:", part1(input))     // 28844599675
 
@@ -24,10 +27,8 @@ func main() {
 }
 
 func part1(input string) int {
-	input = strings.TrimSpace(input)
 	var total int
 	for row := range strings.SplitSeq(input, ",") {
-		row = strings.TrimSpace(row)
 		a, b, ok := strings.Cut(row, "-")
 		if !ok {
 			panic("invalid string")
@@ -47,7 +48,6 @@ func part1(input string) int {
 }
 
 func part2(input string) int {
-	input = strings.TrimSpace(input)
 	var total int
 	for row := range strings.SplitSeq(input, ",") {
 		row = strings.TrimSpace(row)
