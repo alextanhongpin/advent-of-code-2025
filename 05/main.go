@@ -16,23 +16,23 @@ var testInput string
 var input string
 
 func main() {
-	fmt.Println("test1:", part1(testInput)) // 0
-	fmt.Println("prod1:", part1(input))     // 0
+	fmt.Println("test1:", part1(testInput)) // 3
+	fmt.Println("prod1:", part1(input))     // 770
 
-	fmt.Println("test2:", part2(testInput)) // 0
-	fmt.Println("prod2:", part2(input))     // 0
+	fmt.Println("test2:", part2(testInput)) // 14
+	fmt.Println("prod2:", part2(input))     // 357674099117260
 }
 
-type Point struct {
+type Interval struct {
 	x, y int
 }
 
-func (p *Point) In(v int) bool {
-	return v >= p.x && v <= p.y
+func (i *Interval) In(v int) bool {
+	return v >= i.x && v <= i.y
 }
 
-func (p Point) Overlap(o Point) bool {
-	return max(p.x, o.x) <= min(p.y, o.y)
+func (i Interval) Overlap(o Interval) bool {
+	return max(i.x, o.x) <= min(i.y, o.y)
 }
 
 func part1(input string) int {
@@ -41,7 +41,7 @@ func part1(input string) int {
 	if !ok {
 		panic("invalid input row")
 	}
-	var points []Point
+	var intervals []Interval
 	for row := range strings.SplitSeq(ranges, "\n") {
 		if strings.TrimSpace(row) == "" {
 			continue
@@ -50,7 +50,7 @@ func part1(input string) int {
 		if !ok {
 			panic("invalid input")
 		}
-		points = append(points, Point{
+		intervals = append(intervals, Interval{
 			x: toInt(a),
 			y: toInt(b),
 		})
@@ -63,8 +63,8 @@ func part1(input string) int {
 			continue
 		}
 		x := toInt(row)
-		for _, p := range points {
-			if p.In(x) {
+		for _, i := range intervals {
+			if i.In(x) {
 				count++
 				break
 			}
@@ -80,7 +80,7 @@ func part2(input string) int {
 		panic("invalid input row")
 	}
 
-	var points []Point
+	var intervals []Interval
 	for row := range strings.SplitSeq(ranges, "\n") {
 		if strings.TrimSpace(row) == "" {
 			continue
@@ -89,36 +89,37 @@ func part2(input string) int {
 		if !ok {
 			panic("invalid input")
 		}
-		np := Point{
+		np := Interval{
 			x: toInt(a),
 			y: toInt(b),
 		}
-		points = append(points, np)
+		intervals = append(intervals, np)
 	}
 
-	for range len(points) {
-		h := points[0]
-		r := points[1:]
+	for range len(intervals) {
+		h := intervals[0]
+		r := intervals[1:]
+
 		var overlap bool
-		for j, p := range r {
-			if p.Overlap(h) || h.Overlap(p) {
+		for j, i := range r {
+			if i.Overlap(h) {
 				overlap = true
-				r[j] = Point{
-					x: min(p.x, h.x),
-					y: max(p.y, h.y),
+				r[j] = Interval{
+					x: min(i.x, h.x),
+					y: max(i.y, h.y),
 				}
-				points = r
+				intervals = r
 				break
 			}
 		}
 		if !overlap {
-			points = append(r, h)
+			intervals = append(r, h)
 		}
 	}
-	// Merge all points.
+
 	var total int
-	for _, p := range points {
-		total += p.y - p.x + 1
+	for _, i := range intervals {
+		total += i.y - i.x + 1
 	}
 	return total
 }
