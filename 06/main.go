@@ -28,20 +28,21 @@ func main() {
 	fmt.Println("prod2:", part2(input))     // 11419862653216
 }
 
-var re = regexp.MustCompile(`[\*\+]`)
+var re = regexp.MustCompile(`(\d+|\+|\*)`)
 
 func part1(input string) int {
 	rows := strings.Split(input, "\n")
-	indices := re.FindAllStringIndex(rows[len(rows)-1], -1)
-	slices.Reverse(indices)
+	var matches [][]string
+	for _, row := range rows {
+		matches = append(matches, re.FindAllString(row, -1))
+	}
 
 	var total int
-	for _, pos := range indices {
-		p := pos[0]
-		var parts []string
-		for i, row := range rows {
-			rows[i] = row[:p]
-			parts = append(parts, strings.TrimSpace(row[p:]))
+	cols := len(matches[0])
+	for c := range cols {
+		parts := make([]string, len(matches))
+		for i, match := range matches {
+			parts[i] = match[c]
 		}
 		total += compute(parts)
 	}
@@ -65,7 +66,6 @@ func part2(input string) int {
 		}
 	}
 
-	var re = regexp.MustCompile(`(\d+|\+|\*)`)
 	matches := re.FindAllString(s, -1)
 
 	var total int
