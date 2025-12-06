@@ -52,13 +52,9 @@ func part1(input string) int {
 
 func part2(input string) int {
 	rows := strings.Split(input, "\n")
-	var cols int
-	for _, row := range rows {
-		cols = max(cols, len(row))
-	}
-	for i, row := range rows {
-		rows[i] += strings.Repeat(" ", cols-len(row))
-	}
+	cols := len(rows[0])
+	rows[len(rows)-1] += strings.Repeat(" ", cols-len(rows[len(rows)-1]))
+
 	var s string
 	for i := cols - 1; i > -1; i-- {
 		for _, row := range rows {
@@ -69,13 +65,10 @@ func part2(input string) int {
 	matches := re.FindAllString(s, -1)
 
 	var total int
-	for {
+	for len(matches) > 0 {
 		i := slices.IndexFunc(matches, func(s string) bool {
-			return s == "*" || s == "+"
+			return strings.ContainsAny(s, "*+")
 		})
-		if i == -1 {
-			break
-		}
 		total += compute(matches[:i+1])
 		matches = matches[i+1:]
 	}
