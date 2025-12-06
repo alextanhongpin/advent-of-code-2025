@@ -1,4 +1,5 @@
 today := $(shell date +"%d")
+today := 06
 
 day:
 	go run $(today)/main.go | tee $(today)/output.txt

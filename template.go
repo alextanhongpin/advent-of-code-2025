@@ -27,24 +27,14 @@ func main() {
 }
 
 func part1(input string) int {
-	input = strings.TrimSpace(input)
 	for row := range strings.SplitSeq(input, "\n") {
-		row = strings.TrimSpace(row)
-		if row == "" {
-			continue
-		}
 		_ = row
 	}
 	return 0
 }
 
 func part2(input string) int {
-	input = strings.TrimSpace(input)
 	for row := range strings.SplitSeq(input, "\n") {
-		row = strings.TrimSpace(row)
-		if row == "" {
-			continue
-		}
 		_ = row
 	}
 	return 0
