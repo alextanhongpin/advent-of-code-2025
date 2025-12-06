@@ -12,11 +12,11 @@ import (
 var d = regexp.MustCompile(`\d+`)
 
 func main() {
-	fmt.Println(part1(input))
-	fmt.Println(part1(prod))
+	fmt.Println(part1(input)) // 4277556
+	fmt.Println(part1(prod))  // 6371789547734
 
-	fmt.Println(part2(input))
-	fmt.Println(part2(prod))
+	fmt.Println(part2(input)) // 3263827
+	fmt.Println(part2(prod))  // 11419862653216
 }
 
 func part1(input string) int {
@@ -68,11 +68,9 @@ func part2(s string) int {
 	var acc []int
 	for range c {
 		var col string
-
 		for i, r := range rows {
-			rs := []rune(r)
-			col += string(rs[len(rs)-1])
-			rows[i] = string(rs[:len(rs)-1])
+			col += string(r[len(r)-1])
+			rows[i] = r[:len(r)-1]
 		}
 		col = strings.TrimSpace(col)
 		if col == "" {
