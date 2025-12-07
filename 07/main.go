@@ -3,6 +3,7 @@
 package main
 
 import (
+	"cmp"
 	_ "embed"
 	"fmt"
 	"strings"
@@ -144,11 +145,7 @@ func part2(input string) int {
 			p := Point{y: r, x: c}
 			switch grid[p] {
 			case 'S', '|':
-				score, ok := scores[p.Add(down)]
-				if !ok {
-					score = 1
-				}
-				scores[p] += score
+				scores[p] += cmp.Or(scores[p.Add(down)], 1)
 			case '^':
 				scores[p] += scores[p.Add(left).Add(down)] + scores[p.Add(right).Add(down)]
 			}
