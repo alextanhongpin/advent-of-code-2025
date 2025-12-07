@@ -22,15 +22,15 @@ func main() {
 	fmt.Println("test1:", part1(testInput)) // 21
 	fmt.Println("prod1:", part1(input))     // 1613
 
-	fmt.Println("test2:", part2(testInput)) // 40
-	fmt.Println("prod2:", part2(input))     // 48021610271997
+	fmt.Println("test2:", part2(testInput), part2_v1(testInput)) // 40
+	fmt.Println("prod2:", part2(input), part2_v1(input))         // 48021610271997
 }
 
 type Point struct {
 	x, y int
 }
 
-func (p Point) Add(o Point) Point {
+func (p Point) Move(o Point) Point {
 	return Point{
 		p.x + o.x,
 		p.y + o.y,
@@ -45,7 +45,6 @@ var (
 
 func part1(input string) int {
 	rows := strings.Split(input, "\n")
-	cols := 0
 	grid := make(map[Point]rune)
 	var start Point
 	for r, row := range rows {
@@ -60,45 +59,79 @@ func part1(input string) int {
 				start = p
 			}
 		}
-		cols = max(cols, len(row))
 	}
-	var q []Point = []Point{start}
-	var splits int
 
-	for len(q) > 0 {
-		var h Point
-		h, q = q[0], q[1:]
-		d := h.Add(down)
-		ch, ok := grid[d]
-		if !ok {
-			continue
+	var countSplits func(Point) int
+	countSplits = func(p Point) int {
+		if _, ok := grid[p]; !ok {
+			return 0
 		}
-		switch ch {
+		d := p.Move(down)
+		switch grid[d] {
 		case '^':
-			l := d.Add(left)
-			r := d.Add(right)
+			l := d.Move(left)
+			r := d.Move(right)
 			grid[l] = '|'
 			grid[r] = '|'
-			q = append(q, l, r)
-			splits++
+			return 1 + countSplits(l) + countSplits(r)
 		case '.':
 			grid[d] = '|'
-			q = append(q, d)
+			return countSplits(d)
+		default:
+			return 0
 		}
 	}
-	/*
-		for r := range rows {
-			for c := range cols {
-				fmt.Print(string(grid[Point{c, r}]))
-			}
-			fmt.Println()
-		}
-	*/
 
-	return splits
+	return countSplits(start)
 }
 
 func part2(input string) int {
+	rows := strings.Split(input, "\n")
+
+	var start Point
+	grid := make(map[Point]rune)
+	for r, row := range rows {
+		for c, ch := range row {
+			p := Point{
+				x: c,
+				y: r,
+			}
+
+			if ch == 'S' {
+				start = p
+			}
+			grid[p] = ch
+		}
+	}
+
+	seen := make(map[Point]int)
+	var countBeams func(p Point) int
+	countBeams = func(p Point) int {
+		if _, ok := grid[p]; !ok {
+			return 1
+		}
+
+		if seen, ok := seen[p]; ok {
+			return seen
+		}
+
+		d := p.Move(down)
+		switch grid[d] {
+		case '^':
+			l := d.Move(left)
+			r := d.Move(right)
+			seen[d] = countBeams(l) + countBeams(r)
+			return seen[d]
+		default:
+			seen[d] = countBeams(d)
+			return seen[d]
+		}
+	}
+
+	return countBeams(start)
+}
+
+func part2_v1(input string) int {
 	rows := strings.Split(input, "\n")
 	cols := 0
 	grid := make(map[Point]rune)
@@ -121,15 +154,15 @@ func part2(input string) int {
 	for len(q) > 0 {
 		var h Point
 		h, q = q[0], q[1:]
-		d := h.Add(down)
+		d := h.Move(down)
 		ch, ok := grid[d]
 		if !ok {
 			continue
 		}
 		switch ch {
 		case '^':
-			l := d.Add(left)
-			r := d.Add(right)
+			l := d.Move(left)
+			r := d.Move(right)
 			grid[l] = '|'
 			grid[r] = '|'
 			q = append(q, l, r)
@@ -145,9 +178,9 @@ func part2(input string) int {
 			p := Point{y: r, x: c}
 			switch grid[p] {
 			case 'S', '|':
-				scores[p] += cmp.Or(scores[p.Add(down)], 1)
+				scores[p] += cmp.Or(scores[p.Move(down)], 1)
 			case '^':
-				scores[p] += scores[p.Add(left).Add(down)] + scores[p.Add(right).Add(down)]
+				scores[p] += scores[p.Move(left).Move(down)] + scores[p.Move(right).Move(down)]
 			}
 		}
 	}
