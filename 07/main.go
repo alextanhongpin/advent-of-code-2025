@@ -139,24 +139,18 @@ func part2(input string) int {
 	}
 
 	scores := make(map[Point]int)
-	for c := range cols {
-		p := Point{y: len(rows) - 1, x: c}
-		if grid[p] == '|' {
-			scores[p] = 1
-		}
-	}
-
 	for r := len(rows) - 1; r > -1; r-- {
 		for c := range cols {
 			p := Point{y: r, x: c}
-			if grid[p] == '|' || grid[p] == 'S' {
-				scores[p] += scores[p.Add(down)]
-			}
-		}
-		for c := range cols {
-			p := Point{y: r, x: c}
-			if grid[p] == '^' {
-				scores[p] = scores[p.Add(left)] + scores[p.Add(right)]
+			switch grid[p] {
+			case 'S', '|':
+				score, ok := scores[p.Add(down)]
+				if !ok {
+					score = 1
+				}
+				scores[p] += score
+			case '^':
+				scores[p] += scores[p.Add(left).Add(down)] + scores[p.Add(right).Add(down)]
 			}
 		}
 	}
