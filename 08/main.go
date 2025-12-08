@@ -100,7 +100,9 @@ func part2(input string) int {
 
 		us.Unite(l, r)
 		if done() {
-			return toInt(strings.Split(l, ",")[0]) * toInt(strings.Split(r, ",")[0])
+			lhs := strings.Split(l, ",")[0]
+			rhs := strings.Split(r, ",")[0]
+			return toInt(lhs) * toInt(rhs)
 		}
 	}
 
