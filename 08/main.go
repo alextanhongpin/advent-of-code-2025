@@ -30,7 +30,7 @@ func main() {
 
 func part1(input string, connections int) int {
 	rows := strings.Split(input, "\n")
-	us := NewUnionSet()
+	us := NewUnionSet[string]()
 
 	var parts [][]string
 	for i, r := range rows {
@@ -69,7 +69,7 @@ func part1(input string, connections int) int {
 
 func part2(input string) int {
 	rows := strings.Split(input, "\n")
-	us := NewUnionSet()
+	us := NewUnionSet[string]()
 
 	var parts [][]string
 	for i, r := range rows {
@@ -113,7 +113,7 @@ func dist(a, b string) int {
 	as := strings.Split(a, ",")
 	bs := strings.Split(b, ",")
 	if len(as) != len(bs) {
-		panic("invalid input")
+		panic("invalid len")
 	}
 	var dist int
 	for i := range len(as) {
@@ -132,25 +132,28 @@ func toInt(s string) int {
 	return n
 }
 
-type UnionSet struct {
-	parents map[string]string
+type UnionSet[T comparable] struct {
+	parents map[T]T
 }
 
-func NewUnionSet() *UnionSet {
-	return &UnionSet{
-		parents: make(map[string]string),
+func NewUnionSet[T comparable]() *UnionSet[T] {
+	return &UnionSet[T]{
+		parents: make(map[T]T),
 	}
 }
-func (u *UnionSet) Find(i string) string {
-	if n, ok := u.parents[i]; ok && n == i {
-		return i
-	} else if !ok {
-		u.parents[i] = i
+func (u *UnionSet[T]) Find(t T) T {
+	v, ok := u.parents[t]
+	if !ok {
+		u.parents[t] = t
+		return t
 	}
-	return u.Find(u.parents[i])
+	if v == t {
+		return v
+	}
+	return u.Find(u.parents[t])
 }
 
-func (u *UnionSet) Unite(i, j string) {
+func (u *UnionSet[T]) Unite(i, j T) {
 	l := u.Find(i)
 	r := u.Find(j)
 	u.parents[l] = r
