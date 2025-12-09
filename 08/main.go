@@ -32,19 +32,19 @@ func part1(input string, connections int) int {
 	rows := strings.Split(input, "\n")
 	us := NewUnionSet[string]()
 
-	var parts [][]string
-	for i, r := range rows {
-		for _, s := range rows[i+1:] {
-			parts = append(parts, []string{r, s})
+	var pairs [][]string
+	for i, l := range rows {
+		for _, r := range rows[i+1:] {
+			pairs = append(pairs, []string{l, r})
 		}
-		us.Set(r)
+		us.Set(l)
 	}
-	slices.SortFunc(parts, func(a, b []string) int {
+	slices.SortFunc(pairs, func(a, b []string) int {
 		return dist(a[0], a[1]) - dist(b[0], b[1])
 	})
 
-	for _, p := range parts[:connections] {
-		l, r := p[0], p[1]
+	for i := range connections {
+		l, r := pairs[i][0], pairs[i][1]
 		if us.Find(l) == us.Find(r) {
 			continue
 		}
@@ -59,26 +59,21 @@ func part1(input string, connections int) int {
 	slices.Sort(sizes)
 	slices.Reverse(sizes)
 
-	var total int = 1
-	for i := range 3 {
-		total *= sizes[i]
-	}
-
-	return total
+	return sizes[0] * sizes[1] * sizes[2]
 }
 
 func part2(input string) int {
 	rows := strings.Split(input, "\n")
 	us := NewUnionSet[string]()
 
-	var parts [][]string
-	for i, r := range rows {
-		for _, s := range rows[i+1:] {
-			parts = append(parts, []string{r, s})
+	var pairs [][]string
+	for i, l := range rows {
+		for _, r := range rows[i+1:] {
+			pairs = append(pairs, []string{l, r})
 		}
-		us.Set(r)
+		us.Set(l)
 	}
-	slices.SortFunc(parts, func(a, b []string) int {
+	slices.SortFunc(pairs, func(a, b []string) int {
 		return dist(a[0], a[1]) - dist(b[0], b[1])
 	})
 
@@ -92,7 +87,7 @@ func part2(input string) int {
 	}
 
 	var l, r string
-	for _, p := range parts {
+	for _, p := range pairs {
 		l, r = p[0], p[1]
 		if us.Find(l) == us.Find(r) {
 			continue
