@@ -70,6 +70,14 @@ func solver(input string) (int, int) {
 			if area > part2 {
 				var valid = true
 				for _, g := range greens {
+					/* Basically find all rextangles that does not overlap with any of the green segments.
+                     d.minX| g.minX| |d.maxX |g.maxX
+					 -- d.minY
+					 -- g.minY
+					 -- d.maxY
+					 -- g.maxY
+					 x
+					*/
 					if d.minX < g.maxX && d.minY < g.maxY && d.maxX > g.minX && d.maxY > g.minY {
 						valid = false
 						break
