@@ -19,50 +19,71 @@ func main() {
 	testInput = strings.TrimSpace(testInput)
 	input = strings.TrimSpace(input)
 
-	fmt.Println("test1:", part1(testInput)) // 50
-	fmt.Println("prod1:", part1(input))     // 4756718172
-
-	fmt.Println("test2:", part2(testInput)) // 24
-	fmt.Println("prod2:", part2(input))     // 1665679194
+	fmt.Println(solver(testInput)) // 24
+	fmt.Println(solver(input))     // 1665679194
 }
 
 type Point struct {
 	x, y int
 }
 
-func (p Point) Distance(o Point) int {
-	x := (p.x - o.x)
-	y := (p.y - o.y)
-	return x*x + y*y
-}
-
-func part1(input string) int {
+func solver(input string) (int, int) {
 	var points []Point
 	for row := range strings.SplitSeq(input, "\n") {
 		a, b, ok := strings.Cut(row, ",")
 		if !ok {
 			panic("invalid input")
 		}
-		i, j := toInt(a), toInt(b)
-		points = append(points, Point{i, j})
+		p := Point{toInt(a), toInt(b)}
+		points = append(points, p)
 	}
 
-	p := points
-	var area int
-	l := len(p)
-	for i := range l {
-		for j := range l {
-			width := abs(p[i].x-p[j].x) + 1
-			height := abs(p[i].y-p[j].y) + 1
-			area = max(area, width*height)
+	type data struct {
+		minX, maxX int
+		minY, maxY int
+	}
+	var pairs [][]Point
+	var greens []data
+	for i := range len(points) - 1 {
+		a, b := points[i], points[i+1]
+		greens = append(greens, data{
+			minX: min(a.x, b.x),
+			maxX: max(a.x, b.x),
+			minY: min(a.y, b.y),
+			maxY: max(a.y, b.y),
+		})
+		pairs = append(pairs, []Point{a, b})
+	}
+
+	var part1 int
+	var part2 int
+	for i, a := range points {
+		for _, b := range points[i+1:] {
+			d := data{
+				minX: min(a.x, b.x),
+				maxX: max(a.x, b.x),
+				minY: min(a.y, b.y),
+				maxY: max(a.y, b.y),
+			}
+			area := (d.maxX - d.minX + 1) * (d.maxY - d.minY + 1)
+			part1 = max(part1, area)
+			if area > part2 {
+				var valid = true
+				for _, g := range greens {
+					if d.minX < g.maxX && d.minY < g.maxY && d.maxX > g.minX && d.maxY > g.minY {
+						valid = false
+						break
+					}
+				}
+				if !valid {
+					continue
+				}
+				part2 = max(part2, area)
+			}
 		}
 	}
 
-	return area
-}
-
-func part2(input string) int {
-	panic("not implemented")
+	return part1, part2
 }
 
 func toInt(s string) int {
@@ -71,11 +92,4 @@ func toInt(s string) int {
 		panic(err)
 	}
 	return n
-}
-
-func abs(a int) int {
-	if a < 0 {
-		return -a
-	}
-	return a
 }
