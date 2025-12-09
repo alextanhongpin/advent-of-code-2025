@@ -37,7 +37,7 @@ func part1(input string, connections int) int {
 		for _, s := range rows[i+1:] {
 			parts = append(parts, []string{r, s})
 		}
-		_ = us.Find(r)
+		us.Set(r)
 	}
 	slices.SortFunc(parts, func(a, b []string) int {
 		return dist(a[0], a[1]) - dist(b[0], b[1])
@@ -76,7 +76,7 @@ func part2(input string) int {
 		for _, s := range rows[i+1:] {
 			parts = append(parts, []string{r, s})
 		}
-		_ = us.Find(r)
+		us.Set(r)
 	}
 	slices.SortFunc(parts, func(a, b []string) int {
 		return dist(a[0], a[1]) - dist(b[0], b[1])
@@ -141,15 +141,17 @@ func NewUnionSet[T comparable]() *UnionSet[T] {
 		parents: make(map[T]T),
 	}
 }
+
+func (u *UnionSet[T]) Set(t T) {
+	u.parents[t] = t
+}
+
 func (u *UnionSet[T]) Find(t T) T {
-	v, ok := u.parents[t]
-	if !ok {
-		u.parents[t] = t
-		return t
-	}
+	v := u.parents[t]
 	if v == t {
 		return v
 	}
+
 	return u.Find(u.parents[t])
 }
 
