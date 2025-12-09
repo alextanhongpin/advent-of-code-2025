@@ -147,9 +147,8 @@ func (u *UnionSet[T]) Set(t T) {
 }
 
 func (u *UnionSet[T]) Find(t T) T {
-	v := u.parents[t]
-	if v == t {
-		return v
+	if u.parents[t] == t {
+		return t
 	}
 
 	return u.Find(u.parents[t])
