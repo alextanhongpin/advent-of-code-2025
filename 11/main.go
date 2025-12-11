@@ -43,6 +43,8 @@ func part1(input string) int {
 		grid[paths[0]] = paths[1:]
 	}
 
+	// Alternative solution, just showing how both methods works.
+	// return countPath(grid, "you", "out")
 	return len(solvePath(grid, "you", "out"))
 }
 
