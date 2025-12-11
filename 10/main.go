@@ -35,12 +35,10 @@ func part1(input string) int {
 	var total int
 	for row := range strings.SplitSeq(input, "\n") {
 		row = re.ReplaceAllString(row, "")
+		row = strings.ReplaceAll(row, ".", "0")
+		row = strings.ReplaceAll(row, "#", "1")
 		parts := strings.Fields(row)
-		parts = parts[:len(parts)-1]
-
-		ind := parseInd(parts[0])
-		buttons := parts[1:]
-		press := minPress(ind, buttons)
+		press := minPress(parts)
 		total += press
 	}
 	return total
@@ -50,7 +48,13 @@ func part2(input string) int {
 	panic("see python solution")
 }
 
-func minPress(ind []bool, buttons []string) int {
+func minPress(parts []string) int {
+	parts = parts[:len(parts)-1] // Remove joltage
+	ind := parseBin(parts[0])
+	buttons := make([]int, len(parts[1:]))
+	for i, btn := range parts[1:] {
+		buttons[i] = parseButton(btn, len(parts[0]))
+	}
 	item := &Item{
 		ind:     ind,
 		buttons: buttons,
@@ -64,15 +68,12 @@ func minPress(ind []bool, buttons []string) int {
 	// Take the items out; they arrive in decreasing priority order.
 	for pq.Len() > 0 {
 		item := heap.Pop(&pq).(*Item)
-		if !slices.Contains(item.ind, true) {
+		if item.ind == 0 {
 			return item.priority
 		}
 		for i, btn := range item.buttons {
-			ind := slices.Clone(item.ind)
-			for s := range strings.SplitSeq(btn, ",") {
-				i := toInt(s)
-				ind[i] = !ind[i]
-			}
+			ind := item.ind
+			ind ^= btn
 			btns := slices.Clone(item.buttons)
 			btns = slices.Delete(btns, i, i+1)
 			heap.Push(&pq, &Item{
@@ -84,6 +85,22 @@ func minPress(ind []bool, buttons []string) int {
 	}
 
 	panic("invalid")
+}
+
+func parseButton(s string, size int) int {
+	b := []rune(strings.Repeat("0", size))
+	for s := range strings.SplitSeq(s, ",") {
+		b[toInt(s)] = '1'
+	}
+	return parseBin(string(b))
+}
+
+func parseBin(s string) int {
+	n, err := strconv.ParseInt(s, 2, 64)
+	if err != nil {
+		panic(err)
+	}
+	return int(n)
 }
 
 func toInt(s string) int {
@@ -104,8 +121,8 @@ func parseInd(s string) []bool {
 
 // An Item is something we manage in a priority queue.
 type Item struct {
-	ind      []bool
-	buttons  []string
+	ind      int
+	buttons  []int
 	priority int // The priority of the item in the queue.
 }
 
