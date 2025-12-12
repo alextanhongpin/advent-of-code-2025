@@ -6,6 +6,7 @@ import (
 	"bufio"
 	_ "embed"
 	"fmt"
+	"regexp"
 	"slices"
 	"strconv"
 	"strings"
@@ -17,15 +18,15 @@ var testInput string
 //go:embed input.txt
 var input string
 
+var re = regexp.MustCompile(`\d+`)
+
 func main() {
 	testInput = strings.TrimSpace(testInput)
 	input = strings.TrimSpace(input)
 
-	fmt.Println("test1:", part1(testInput)) // 0
-	fmt.Println("prod1:", part1(input))     // 0
+	fmt.Println("test1:", part1(testInput)) // 2
+	fmt.Println("prod1:", part1(input))     // 425
 
-	fmt.Println("test2:", part2(testInput)) // 0
-	fmt.Println("prod2:", part2(input))     // 0
 }
 
 func part1(input string) int {
@@ -35,35 +36,18 @@ func part1(input string) int {
 	for scanner.Scan() {
 		text := scanner.Text()
 		if !strings.Contains(text, "x") {
-
 			var present string
 			for scanner.Scan() {
-				txt := strings.TrimSpace(scanner.Text())
-				if len(txt) == 0 {
+				p := strings.TrimSpace(scanner.Text())
+				if len(p) == 0 {
 					break
 				}
-				present += txt
+				present += p
 			}
 			presents = append(presents, present)
 		} else {
-			dim, arr, ok := strings.Cut(text, ": ")
-			if !ok {
-				panic("invalid input")
-			}
-			as := strings.Fields(arr)
-			a := make([]int, len(as))
-			for i, s := range as {
-				a[i] = toInt(s)
-			}
-			ws, hs, ok := strings.Cut(dim, "x")
-			if !ok {
-				panic("invalid dimenstion")
-			}
-			w := toInt(ws)
-			h := toInt(hs)
-
-			if arrange(w, h, a, presents) {
-				fmt.Println(w, h, a)
+			m := toIntSlice(re.FindAllString(text, -1))
+			if arrange(m[0], m[1], m[2:], presents) {
 				total++
 			}
 		}
@@ -104,21 +88,12 @@ func arrange(width, height int, arr []int, presents []string) bool {
 		if len(h.choices) == 0 {
 			return true
 		}
-		var count int
 		choices := getCombinations(h.choices[0])
-		var ok bool
 		for _, choice := range choices {
 			for y := range height - 2 {
 				for x := range width - 2 {
 					var valid = true
 					box := deepClone(h.box)
-					bs := ""
-					for _, r := range box {
-						bs += sliceAsString(r)
-					}
-					if !strings.Contains(bs, "000") && len(h.choices) < 3 {
-						return false
-					}
 					for dy := range 3 {
 						for dx := range 3 {
 							box[y+dy][x+dx] += toInt(string(choice[dy*3+dx]))
@@ -131,7 +106,6 @@ func arrange(width, height int, arr []int, presents []string) bool {
 					if !valid {
 						continue
 					}
-					ok = true
 					q = append([]state{{
 						box:     box,
 						choices: slices.Clone(h.choices[1:]),
@@ -139,30 +113,9 @@ func arrange(width, height int, arr []int, presents []string) bool {
 				}
 			}
 		}
-		if !ok {
-			count++
-			if count > 10 {
-				break
-			}
-		}
 	}
 
 	return false
-}
-
-func sliceAsString(s []int) string {
-	var t string
-	for i := range s {
-		t += strconv.Itoa(s[i])
-	}
-	return t
-}
-
-func part2(input string) int {
-	for row := range strings.SplitSeq(input, "\n") {
-		_ = row
-	}
-	return 0
 }
 
 func toInt(s string) int {
@@ -173,6 +126,15 @@ func toInt(s string) int {
 	return n
 }
 
+func toIntSlice(ss []string) []int {
+	res := make([]int, len(ss))
+	for i, s := range ss {
+		res[i] = toInt(s)
+	}
+	return res
+}
+
+// Rotate 90 degree, flip vertical and horizontal.
 var patterns = `012345678
 210543876
 678345012
