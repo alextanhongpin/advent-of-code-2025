@@ -3,8 +3,9 @@
 package main
 
 import (
-	"bufio"
 	_ "embed"
+
+	"bufio"
 	"fmt"
 	"regexp"
 	"slices"
@@ -26,7 +27,6 @@ func main() {
 
 	fmt.Println("test1:", part1(testInput)) // 2
 	fmt.Println("prod1:", part1(input))     // 425
-
 }
 
 func part1(input string) int {
@@ -73,7 +73,7 @@ func arrange(width, height int, arr []int, presents []string) bool {
 			area += strings.Count(presents[i], "#")
 		}
 	}
-	if area < (width * height * 3 / 4) {
+	if area+10*9 < width*height {
 		return true
 	}
 	if area > width*height {
